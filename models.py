@@ -1,0 +1,37 @@
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class Publisher(Base):
+    __tablename__ = "publisher"
+    id = Column(Integer, primary_key=True)
+    name = Column(String, unique=True, nullable=False)
+
+    comics = relationship("Comic", back_populates="publisher")
+
+class Grade(Base):
+    __tablename__ = "grade"
+    id = Column(Integer, primary_key=True)
+    abbreviation = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    value = Column(Float, nullable=False)
+
+    comics = relationship("Comic", back_populates="grade")
+
+class Comic(Base):
+    __tablename__ = "comic"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)  # for auth later
+    title = Column(String, nullable=False)
+    issue_number = Column(String, nullable=False)
+    publisher_id = Column(Integer, ForeignKey("publisher.id"))
+    grade_id = Column(Integer, ForeignKey("grade.id"))
+    cover_image_url = Column(String)
+    buy_price = Column(Float)
+    current_value = Column(Float)
+    sell_price = Column(Float)
+
+    publisher = relationship("Publisher", back_populates="comics")
+    grade = relationship("Grade", back_populates="comics")
