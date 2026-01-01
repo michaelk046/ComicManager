@@ -2,7 +2,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from database import database
 from schemas import UserOut
 import tables
 from argon2 import PasswordHasher
@@ -39,17 +38,14 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def authenticate_user(username: str, password: str):
-    query = tables.users.select().where(tables.users.c.username == username)
-    user = await database.fetch_one(query)
-
-    if not user:
+async def authenticate_user(username: str, password: str, db: AsyncSession):
+    result = await db.execute(
+        select(User).where(User.username == username)
+    )
+    user = result.scalar_one_or_none()
+    if not user or not verify_password(password, user.hashed_password):
         return None
-
-    if not verify_password(password, user["hashed_password"]):
-        return None
-
-    return UserOut(id=user["id"], username=user["username"])
+    return UserOut(id=user.id, username=user.username)
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -65,10 +61,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
-    query = tables.users.select().where(tables.users.c.id == int(user_id))
-    user = await database.fetch_one(query)
-
-    if user is None:
-        raise credentials_exception
-
-    return UserOut(id=user["id"], username=user["username"])
+    user = result.scalar_one_or_none()
+    if not user or not verify_password(password, user.hashed_password):
+        return None
+    return UserOut(id=user.id, username=user.username)
