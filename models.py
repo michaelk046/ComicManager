@@ -4,6 +4,14 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+    comics = relationship("Comic", back_populates="owner")
+
 class Publisher(Base):
     __tablename__ = "publisher"
     id = Column(Integer, primary_key=True)
