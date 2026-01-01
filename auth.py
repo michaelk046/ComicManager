@@ -6,6 +6,7 @@ from schemas import UserOut
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
