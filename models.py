@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String(256), nullable=False)
+    hashed_password = Column(String, nullable=False)
 
     comics = relationship("Comic", back_populates="owner")
 
@@ -43,3 +43,4 @@ class Comic(Base):
 
     publisher = relationship("Publisher", back_populates="comics")
     grade = relationship("Grade", back_populates="comics")
+    owner = relationship("User", back_populates="comics")
