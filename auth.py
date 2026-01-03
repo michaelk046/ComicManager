@@ -8,6 +8,8 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from dotenv import load_dotenv
 import os
+from sqlalchemy import select
+from models import User
 
 load_dotenv()
 
