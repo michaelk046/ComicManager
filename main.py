@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import APIRouter, FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,6 +14,7 @@ from auth import (
 from crud import get_comics, create_comic, update_comic, delete_comic
 
 app = FastAPI(title="Comic Manager API")
+router = APIRouter()
 
 app.add_middleware(
     CORSMiddleware,
@@ -93,3 +94,43 @@ async def remove_comic(
 @app.get("/")
 async def root():
     return {"message": "Comic Manager API is running! 📚🦸"}
+
+@router.get("/comics", response_model=list[Comic])
+async def read_comics(
+    db: AsyncSession = Depends(get_db),
+    current_user: UserOut = Depends(get_current_user)
+):
+    return await get_comics(db, current_user.id)
+
+@router.post("/comics", response_model=Comic)
+async def add_comic(
+    comic: ComicCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: UserOut = Depends(get_current_user)
+):
+    return await create_comic(db, comic, current_user.id)
+
+@router.patch("/comics/{comic_id}", response_model=Comic)
+async def edit_comic(
+    comic_id: int,
+    comic_update: ComicCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: UserOut = Depends(get_current_user)
+):
+    comic = await update_comic(db, comic_id, comic_update, current_user.id)
+    if not comic:
+        raise HTTPException(status_code=404, detail="Comic not found")
+    return comic
+
+@router.delete("/comics/{comic_id}")
+async def remove_comic(
+    comic_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: UserOut = Depends(get_current_user)
+):
+    comic = await delete_comic(db, comic_id, current_user.id)
+    if not comic:
+        raise HTTPException(status_code=404, detail="Comic not found")
+    return {"detail": "Comic deleted"}
+
+app.include_router(router)
