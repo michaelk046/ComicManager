@@ -31,7 +31,7 @@ class Grade(Base):
 class Comic(Base):
     __tablename__ = "comic"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, nullable=False)  # for auth later
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String, nullable=False)
     issue_number = Column(String, nullable=False)
     publisher_id = Column(Integer, ForeignKey("publisher.id"))
