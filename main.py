@@ -32,18 +32,20 @@ async def startup():
 
 @app.post("/register", response_model=UserOut)
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    # Check if user exists
-    result = await db.execute(User.__table__.select().where(User.username == user.username))
-    existing_user = result.first()
+    # Check if username exists
+    result = await db.execute(select(User).where(User.username == user.username))
+    existing_user = result.scalar_one_or_none()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already taken")
 
     hashed_password = get_password_hash(user.password)
+
     new_user = User(username=user.username, hashed_password=hashed_password)
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
     return UserOut(id=new_user.id, username=new_user.username)
+
 @app.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     user = await authenticate_user(form_data.username, form_data.password, db)
