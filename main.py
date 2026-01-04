@@ -73,7 +73,7 @@ async def register(user: UserCreate, db: AsyncSessionLocal = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
 @app.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessionLocal = Depends(get_db)):
     user = await authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
