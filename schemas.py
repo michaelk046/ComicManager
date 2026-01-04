@@ -22,8 +22,15 @@ class ComicBase(BaseModel):
     sell_price: Optional[float] = None
     cover_image_url: Optional[str] = None
 
-class ComicCreate(ComicBase):
-    pass
+class ComicCreate(BaseModel):
+    title: str
+    issue_number: str
+    publisher: Optional[str] = None
+    grade: Optional[str] = None
+    cover_image_url: Optional[str] = None
+    buy_price: Optional[float] = None
+    current_value: Optional[float] = None
+    sell_price: Optional[float] = None
 
 class Comic(ComicBase):
     id: int
