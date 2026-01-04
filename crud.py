@@ -23,27 +23,13 @@ async def create_comic(db: AsyncSession, comic: ComicCreate, user_id: int):
     # Lookup publisher_id
     publisher_id = None
     if comic.publisher:
-        result = await db.execute(select(Publisher).where(Publisher.name == comic.publisher))
-        publisher = result.scalar_one_or_none()
-        if not publisher:
-            # Create new publisher if not exists
-            publisher = Publisher(name=comic.publisher)
-            db.add(publisher)
-            await db.flush()  # get ID
-        publisher_id = publisher.id
-    else:
-        publisher_id = None
+        result = await db.execute(select(Publisher.id).where(Publisher.name == comic.publisher))
+        publisher_id = result.scalar_one_or_none()
 
-    # Lookup grade_id
     grade_id = None
     if comic.grade:
-        result = await db.execute(select(Grade).where(Grade.abbreviation == comic.grade))
-        grade = result.scalar_one_or_none()
-        if not grade:
-            raise HTTPException(status_code=400, detail=f"Grade {comic.grade} not found")
-        grade_id = grade.id
-    else:
-        grade_id = None
+        result = await db.execute(select(Grade.id).where(Grade.abbreviation == comic.grade))
+        grade_id = result.scalar_one_or_none()
 
     db_comic = Comic(
         user_id=user_id,
