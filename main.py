@@ -51,7 +51,7 @@ async def startup():
 # === AUTH ROUTES ===
 
 @app.post("/register", response_model=UserOut)
-async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
+async def register(user: UserCreate, db: AsyncSessionLocal = Depends(get_db)):
     try:
         # Check if username exists
         result = await db.execute(select(User).where(User.username == user.username))
