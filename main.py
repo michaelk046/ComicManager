@@ -30,7 +30,7 @@ async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    async with AsyncSessionLocal() as db:
+    async with AsyncSession() as db:
         # Populate grades if empty
         result = await db.execute(select(Grade))
         if not result.scalars().all():
