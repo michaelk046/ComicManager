@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSessionLocal
 from database import get_db, engine
 from models import Base, User, Grade, Publisher
 from schemas import UserCreate, UserOut, Comic, ComicCreate
