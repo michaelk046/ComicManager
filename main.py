@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db, engine
-from models import Base, User
+from models import Base, User, Grade, Publisher
 from schemas import UserCreate, UserOut, Comic, ComicCreate
 from auth import (
     get_current_user,
@@ -30,20 +30,25 @@ async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    async with AsyncSession() as db:
-        # Populate grades if empty
-        result = await db.execute(select(Grade))
-        if not result.scalars().all():
-            for g in grades:
-                db.add(Grade(**g))
-            await db.commit()
+    async with AsyncSessionLocal() as db:
+        try:
+            # Populate grades if empty
+            result = await db.execute(select(Grade))
+            if not result.scalars().all():
+                for g in grades:
+                    db.add(Grade(**g))
+                await db.commit()
+                print("Grades populated")
 
-        # Populate publishers if empty
-        result = await db.execute(select(Publisher))
-        if not result.scalars().all():
-            for p in publishers:
-                db.add(Publisher(name=p))
-            await db.commit()
+            # Populate publishers if empty
+            result = await db.execute(select(Publisher))
+            if not result.scalars().all():
+                for p in publishers:
+                    db.add(Publisher(name=p))
+                await db.commit()
+                print("Publishers populated")
+        except Exception as e:
+            print(f"Error populating tables: {e}")
 # === AUTH ROUTES ===
 
 @app.post("/register", response_model=UserOut)
