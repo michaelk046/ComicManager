@@ -88,14 +88,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
 async def read_comics(
         skip: int = 0,
         limit: int = 100,
-        db: AsyncSession = Depends(get_db),
+        db: AsyncSessionLocal = Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     return await get_comics(db, current_user.id, skip=skip, limit=limit)
 @app.post("/comics", response_model=Comic)
 async def add_comic(
         comic: ComicCreate,
-        db: AsyncSession = Depends(get_db),
+        db: AsyncSessionLocal= Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     return await create_comic(db, comic, current_user.id)
@@ -103,7 +103,7 @@ async def add_comic(
 async def edit_comic(
         comic_id: int,
         comic_update: ComicCreate,
-        db: AsyncSession = Depends(get_db),
+        db: AsyncSessionLocal= Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     comic = await update_comic(db, comic_id, comic_update, current_user.id)
@@ -113,7 +113,7 @@ async def edit_comic(
 @app.delete("/comics/{comic_id}")
 async def remove_comic(
         comic_id: int,
-        db: AsyncSession = Depends(get_db),
+        db: AsyncSessionLocal= Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     comic = await delete_comic(db, comic_id, current_user.id)
@@ -126,7 +126,7 @@ async def root():
 
 @router.get("/comics", response_model=list[Comic])
 async def read_comics(
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSessionLocal= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     return await get_comics(db, current_user.id)
@@ -134,7 +134,7 @@ async def read_comics(
 @router.post("/comics", response_model=Comic)
 async def add_comic(
     comic: ComicCreate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSessionLocal= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     return await create_comic(db, comic, current_user.id)
@@ -143,7 +143,7 @@ async def add_comic(
 async def edit_comic(
     comic_id: int,
     comic_update: ComicCreate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSessionLocal= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     comic = await update_comic(db, comic_id, comic_update, current_user.id)
@@ -154,7 +154,7 @@ async def edit_comic(
 @router.delete("/comics/{comic_id}")
 async def remove_comic(
     comic_id: int,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSessionLocal= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     comic = await delete_comic(db, comic_id, current_user.id)
