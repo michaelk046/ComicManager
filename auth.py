@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import os
 from sqlalchemy import select
 from models import User
+from database import get_db
 
 load_dotenv()
 
