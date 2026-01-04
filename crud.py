@@ -20,7 +20,37 @@ async def get_comic(db: AsyncSession, comic_id: int, user_id: int):
     return result.scalar_one_or_none()
 
 async def create_comic(db: AsyncSession, comic: ComicCreate, user_id: int):
-    db_comic = Comic(**comic.dict(), user_id=user_id)
+    # Lookup publisher_id
+    publisher_id = None
+    if comic.publisher:
+        result = await db.execute(select(Publisher.id).where(Publisher.name == comic.publisher))
+        publisher_id = result.scalar_one_or_none()
+        if not publisher_id:
+            # Create new publisher if not exists
+            new_pub = Publisher(name=comic.publisher)
+            db.add(new_pub)
+            await db.flush()
+            publisher_id = new_pub.id
+
+    # Lookup grade_id
+    grade_id = None
+    if comic.grade:
+        result = await db.execute(select(Grade.id).where(Grade.abbreviation == comic.grade))
+        grade_id = result.scalar_one_or_none()
+        if not grade_id:
+            raise HTTPException(status_code=400, detail=f"Grade '{comic.grade}' not found")
+
+    db_comic = Comic(
+        user_id=user_id,
+        title=comic.title,
+        issue_number=comic.issue_number,
+        publisher_id=publisher_id,
+        grade_id=grade_id,
+        cover_image_url=comic.cover_image_url,
+        buy_price=comic.buy_price,
+        current_value=comic.current_value,
+        sell_price=comic.sell_price
+    )
     db.add(db_comic)
     await db.commit()
     await db.refresh(db_comic)
