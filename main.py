@@ -29,6 +29,21 @@ app.add_middleware(
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    async with AsyncSessionLocal() as db:
+        # Populate grades if empty
+        result = await db.execute(select(Grade))
+        if not result.scalars().all():
+            for g in grades:
+                db.add(Grade(**g))
+            await db.commit()
+
+        # Populate publishers if empty
+        result = await db.execute(select(Publisher))
+        if not result.scalars().all():
+            for p in publishers:
+                db.add(Publisher(name=p))
+            await db.commit()
 # === AUTH ROUTES ===
 
 @app.post("/register", response_model=UserOut)
