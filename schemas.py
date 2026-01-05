@@ -22,37 +22,16 @@ class ComicBase(BaseModel):
     current_value: Optional[float] = None
     sell_price: Optional[float] = None
 
-class ComicCreate(BaseModel):
-    title: str
-    issue_number: str
-    publisher: Optional[str] = None
-    grade: Optional[str] = None
-    cover_image_url: Optional[str] = None
-    buy_price: Optional[float] = None
-    current_value: Optional[float] = None
-    sell_price: Optional[float] = None
-
-class Comic(ComicBase):
-    id: int
-    user_id: int
-    issue_number: str
-    publisher_id: Optional[int] = None
-    grade_id: Optional[int] = None
-    cover_image_url: Optional[str] = None
-    buy_price: Optional[float] = None
-    current_value: Optional[float] = None
-    sell_price: Optional[float] = None
-
-    class Config:
-        from_attributes = True
+class ComicCreate(ComicBase):
+    pass  # inherits all from ComicBase
 
 class ComicOut(BaseModel):
     id: int
     user_id: int
     title: str
     issue_number: str
-    publisher: Optional[str] = None
-    grade: Optional[str] = None
+    publisher_id: Optional[int] = None
+    grade_id: Optional[int] = None
     cover_image_url: Optional[str] = None
     buy_price: Optional[float] = None
     current_value: Optional[float] = None
