@@ -22,11 +22,13 @@ async def get_comic(db: AsyncSession, comic_id: int, user_id: int):
 async def create_comic(db: AsyncSession, comic: ComicCreate, user_id: int):
     # Lookup publisher_id
     publisher_id = None
-    if comic.publisher:
-        result = await db.execute(select(Publisher.id).where(Publisher.name.ilike(comic.publisher.strip())))
+    if comic.publisher and comic.publisher.strip():
+        result = await db.execute(
+            select(Publisher.id).where(Publisher.name.ilike(comic.publisher.strip()))
+        )
         publisher_id = result.scalar_one_or_none()
         if not publisher_id:
-            # Create new publisher if not exists
+            # Create new publisher
             new_pub = Publisher(name=comic.publisher.strip())
             db.add(new_pub)
             await db.flush()
