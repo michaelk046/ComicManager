@@ -42,7 +42,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def authenticate_user(username: str, password: str, db: AsyncSession):
+async def authenticate_user(username: str, password: str, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.username == username))
     user = result.scalar_one_or_none()
     if not user or not verify_password(password, user.hashed_password):
