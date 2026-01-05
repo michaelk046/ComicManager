@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from database import AsyncSessionLocal, get_db, engine
 from models import Base, User, Grade, Publisher
-from schemas import UserCreate, UserOut, Comic, ComicCreate
+from schemas import UserCreate, UserOut, ComicCreate, ComicOut
 from auth import (
     get_current_user,
     authenticate_user,
@@ -86,7 +86,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     return {"access_token": access_token, "token_type": "bearer"}
 
 # === COMIC ROUTES ===
-@app.get("/comics", response_model=list[Comic])
+@app.get("/comics", response_model=list[ComicOut])
 async def read_comics(
         skip: int = 0,
         limit: int = 100,
@@ -94,7 +94,7 @@ async def read_comics(
         current_user: UserOut = Depends(get_current_user)
 ):
     return await get_comics(db, current_user.id, skip=skip, limit=limit)
-@app.post("/comics", response_model=Comic)
+@app.post("/comics", response_model=ComicOut)
 async def add_comic(
         comic: ComicCreate,
         db: AsyncSession= Depends(get_db),
