@@ -25,6 +25,7 @@ class Grade(Base):
     abbreviation = Column(String, unique=True, nullable=False)
     name = Column(String, nullable=False)
     value = Column(Float, nullable=False)
+    comment = Column(String)
 
     comics = relationship("Comic", back_populates="grade")
 
