@@ -133,7 +133,7 @@ async def read_comics(
 ):
     return await get_comics(db, current_user.id)
 
-@router.post("/comics", response_model=ComicOut)
+@router.post("/comics", response_model=Comic)
 async def add_comic(
     comic: ComicCreate,
     db: AsyncSession= Depends(get_db),
