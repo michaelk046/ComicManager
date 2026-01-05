@@ -126,14 +126,14 @@ async def remove_comic(
 async def root():
     return {"message": "Comic Manager API is running! 📚🦸"}
 
-@router.get("/comics", response_model=list[Comic])
+@router.get("/comics", response_model=list[ComicOut])
 async def read_comics(
     db: AsyncSession= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     return await get_comics(db, current_user.id)
 
-@router.post("/comics", response_model=Comic)
+@router.post("/comics", response_model=ComicOut)
 async def add_comic(
     comic: ComicCreate,
     db: AsyncSession= Depends(get_db),
@@ -141,7 +141,7 @@ async def add_comic(
 ):
     return await create_comic(db, comic, current_user.id)
 
-@router.patch("/comics/{comic_id}", response_model=Comic)
+@router.patch("/comics/{comic_id}", response_model=ComicOut)
 async def edit_comic(
     comic_id: int,
     comic_update: ComicCreate,

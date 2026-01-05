@@ -40,3 +40,19 @@ class Comic(ComicBase):
 
     class Config:
         from_attributes = True
+
+
+class ComicOut(BaseModel):
+    id: int
+    user_id: int
+    title: str
+    issue_number: str
+    publisher: Optional[str] = None
+    grade: Optional[str] = None
+    cover_image_url: Optional[str] = None
+    buy_price: Optional[float] = None
+    current_value: Optional[float] = None
+    sell_price: Optional[float] = None
+
+    class Config:
+        from_attributes = True
