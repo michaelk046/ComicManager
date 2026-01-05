@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from models import Comic
+from models import Publisher, Grade, Comic
 from schemas import ComicCreate
 
 async def get_comics(db: AsyncSession, user_id: int, skip: int = 0, limit: int = 100):
@@ -22,10 +22,8 @@ async def get_comic(db: AsyncSession, comic_id: int, user_id: int):
 async def create_comic(db: AsyncSession, comic: ComicCreate, user_id: int):
     # Lookup publisher_id
     publisher_id = None
-    if comic.publisher and comic.publisher.strip():
-        result = await db.execute(
-            select(Publisher.id).where(Publisher.name.ilike(comic.publisher.strip()))
-        )
+    if comic.publisher:
+        result = await db.execute(select(Publisher.id).where(Publisher.name.ilike(comic.publisher.strip())))
         publisher_id = result.scalar_one_or_none()
         if not publisher_id:
             # Create new publisher
@@ -39,17 +37,13 @@ async def create_comic(db: AsyncSession, comic: ComicCreate, user_id: int):
     if comic.grade:
         result = await db.execute(select(Grade.id).where(Grade.abbreviation == comic.grade.strip()))
         grade_id = result.scalar_one_or_none()
-        if not grade_id:
-            # Grade not found — you can raise or default to "NG"
-            result = await db.execute(select(Grade.id).where(Grade.abbreviation == "NG"))
-            grade_id = result.scalar_one_or_none()
 
     db_comic = Comic(
         user_id=user_id,
         title=comic.title,
         issue_number=comic.issue_number,
-        publisher_id=None,
-        grade_id=None,
+        publisher_id=publisher_id,
+        grade_id=grade_id,
         cover_image_url=comic.cover_image_url,
         buy_price=comic.buy_price,
         current_value=comic.current_value,
