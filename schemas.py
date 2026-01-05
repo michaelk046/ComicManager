@@ -35,6 +35,8 @@ class ComicCreate(BaseModel):
 class Comic(ComicBase):
     id: int
     user_id: int
+    publisher_id: Optional[int] = None
+    grade_id: Optional[int] = None
 
     class Config:
         from_attributes = True

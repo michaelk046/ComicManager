@@ -13,6 +13,7 @@ from auth import (
 )
 from crud import get_comics, create_comic, update_comic, delete_comic
 from seed_data import grades, publishers
+from sqlalchemy.ext.asyncio import AsyncSession
 
 app = FastAPI(title="Comic Manager API")
 router = APIRouter()
@@ -52,7 +53,7 @@ async def startup():
 # === AUTH ROUTES ===
 
 @app.post("/register", response_model=UserOut)
-async def register(user: UserCreate, db: AsyncSessionLocal = Depends(get_db)):
+async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
     try:
         # Check if username exists
         result = await db.execute(select(User).where(User.username == user.username))
@@ -74,7 +75,7 @@ async def register(user: UserCreate, db: AsyncSessionLocal = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
 @app.post("/login")
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessionLocal = Depends(get_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     user = await authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
@@ -89,14 +90,14 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
 async def read_comics(
         skip: int = 0,
         limit: int = 100,
-        db: AsyncSessionLocal = Depends(get_db),
+        db: AsyncSession = Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     return await get_comics(db, current_user.id, skip=skip, limit=limit)
 @app.post("/comics", response_model=Comic)
 async def add_comic(
         comic: ComicCreate,
-        db: AsyncSessionLocal= Depends(get_db),
+        db: AsyncSession= Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     return await create_comic(db, comic, current_user.id)
@@ -104,7 +105,7 @@ async def add_comic(
 async def edit_comic(
         comic_id: int,
         comic_update: ComicCreate,
-        db: AsyncSessionLocal= Depends(get_db),
+        db: AsyncSession= Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     comic = await update_comic(db, comic_id, comic_update, current_user.id)
@@ -114,7 +115,7 @@ async def edit_comic(
 @app.delete("/comics/{comic_id}")
 async def remove_comic(
         comic_id: int,
-        db: AsyncSessionLocal= Depends(get_db),
+        db: AsyncSession= Depends(get_db),
         current_user: UserOut = Depends(get_current_user)
 ):
     comic = await delete_comic(db, comic_id, current_user.id)
@@ -127,7 +128,7 @@ async def root():
 
 @router.get("/comics", response_model=list[Comic])
 async def read_comics(
-    db: AsyncSessionLocal= Depends(get_db),
+    db: AsyncSession= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     return await get_comics(db, current_user.id)
@@ -135,7 +136,7 @@ async def read_comics(
 @router.post("/comics", response_model=Comic)
 async def add_comic(
     comic: ComicCreate,
-    db: AsyncSessionLocal= Depends(get_db),
+    db: AsyncSession= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     return await create_comic(db, comic, current_user.id)
@@ -144,7 +145,7 @@ async def add_comic(
 async def edit_comic(
     comic_id: int,
     comic_update: ComicCreate,
-    db: AsyncSessionLocal= Depends(get_db),
+    db: AsyncSession= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     comic = await update_comic(db, comic_id, comic_update, current_user.id)
@@ -155,7 +156,7 @@ async def edit_comic(
 @router.delete("/comics/{comic_id}")
 async def remove_comic(
     comic_id: int,
-    db: AsyncSessionLocal= Depends(get_db),
+    db: AsyncSession= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
 ):
     comic = await delete_comic(db, comic_id, current_user.id)
