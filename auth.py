@@ -11,6 +11,7 @@ import os
 from sqlalchemy import select
 from models import User
 from database import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
 
 load_dotenv()
 
