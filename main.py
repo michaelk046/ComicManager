@@ -15,7 +15,7 @@ from crud import get_comics, create_comic, update_comic, delete_comic
 from seed_data import grades, publishers
 from sqlalchemy.ext.asyncio import AsyncSession
 
-app = FastAPI(title="Comic Manager API")
+app = FastAPI(title="Comic Manager API", debug=True)
 router = APIRouter()
 
 app.add_middleware(
