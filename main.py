@@ -126,7 +126,7 @@ async def remove_comic(
 async def root():
     return {"message": "Comic Manager API is running! 📚🦸"}
 
-@router.get("/comics", response_model=list[ComicOut])
+@router.get("/comics", response_model=list[Comic])
 async def read_comics(
     db: AsyncSession= Depends(get_db),
     current_user: UserOut = Depends(get_current_user)
