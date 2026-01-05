@@ -35,12 +35,16 @@ class ComicCreate(BaseModel):
 class Comic(ComicBase):
     id: int
     user_id: int
+    issue_number: str
     publisher_id: Optional[int] = None
     grade_id: Optional[int] = None
+    cover_image_url: Optional[str] = None
+    buy_price: Optional[float] = None
+    current_value: Optional[float] = None
+    sell_price: Optional[float] = None
 
     class Config:
         from_attributes = True
-
 
 class ComicOut(BaseModel):
     id: int
