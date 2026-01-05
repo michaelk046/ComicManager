@@ -1,0 +1,30 @@
+grades = [
+    {"abbreviation": "GM", "name": "Gem Mint", "value": 10.0, "comment": "(slabbed comics only)"},
+    {"abbreviation": "M", "name": "Mint", "value": 9.9, "comment": "(slabbed comics only)"},
+    {"abbreviation": "NM/M", "name": "Near Mint/Mint", "value": 9.8, "comment": ""},
+    {"abbreviation": "NM+", "name": "Near Mint +", "value": 9.6, "comment": ""},
+    {"abbreviation": "NM", "name": "Near Mint", "value": 9.4, "comment": ""},
+    {"abbreviation": "NM-", "name": "Near Mint -", "value": 9.2, "comment": ""},
+    {"abbreviation": "VF/NM", "name": "Very Fine/Near Mint", "value": 9.0, "comment": ""},
+    {"abbreviation": "VF+", "name": "Very Fine +", "value": 8.5, "comment": ""},
+    {"abbreviation": "VF", "name": "Very Fine", "value": 8.0, "comment": ""},
+    {"abbreviation": "VF-", "name": "Very Fine -", "value": 7.5, "comment": ""},
+    {"abbreviation": "FN/VF", "name": "Fine/Very Fine", "value": 7.0, "comment": ""},
+    {"abbreviation": "FN+", "name": "Fine +", "value": 6.5, "comment": ""},
+    {"abbreviation": "FN", "name": "Fine", "value": 6.0, "comment": ""},
+    {"abbreviation": "FN-", "name": "Fine -", "value": 5.5, "comment": ""},
+    {"abbreviation": "VG/FN", "name": "Very Good/Fine", "value": 5.0, "comment": ""},
+    {"abbreviation": "VG+", "name": "Very Good +", "value": 4.5, "comment": ""},
+    {"abbreviation": "VG", "name": "Very Good", "value": 4.0, "comment": ""},
+    {"abbreviation": "VG-", "name": "Very Good -", "value": 3.5, "comment": ""},
+    {"abbreviation": "GD/VG", "name": "Good/Very Good", "value": 3.0, "comment": ""},
+    {"abbreviation": "GD+", "name": "Good +", "value": 2.5, "comment": ""},
+    {"abbreviation": "GD", "name": "Good", "value": 2.0, "comment": ""},
+    {"abbreviation": "GD-", "name": "Good -", "value": 1.8, "comment": ""},
+    {"abbreviation": "GD/FR", "name": "Good/Fair", "value": 1.5, "comment": ""},
+    {"abbreviation": "FR", "name": "Fair", "value": 1.0, "comment": ""},
+    {"abbreviation": "PR", "name": "Poor", "value": 0.5, "comment": ""},
+    {"abbreviation": "NG", "name": "Not Graded", "value": 0.0, "comment": ""}
+]
+
+publishers = ["Amalgam", "DarkHorse", "DC", "Image", "Marvel"]
