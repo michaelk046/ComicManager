@@ -12,6 +12,7 @@ from auth import (
     get_password_hash
 )
 from crud import get_comics, create_comic, update_comic, delete_comic
+from seed_data import grades, publishers
 
 app = FastAPI(title="Comic Manager API")
 router = APIRouter()
