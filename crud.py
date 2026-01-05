@@ -1,21 +1,21 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from models import Publisher, Grade, ComicOut
+from models import Publisher, Grade, Comic
 from schemas import ComicCreate
 
 async def get_comics(db: AsyncSession, user_id: int, skip: int = 0, limit: int = 100):
     result = await db.execute(
-        select(ComicOut)
-        .where(ComicOut.user_id == user_id)
+        select(Comic)
+        .where(Comic.user_id == user_id)
         .offset(skip)
         .limit(limit)
-        .order_by(ComicOut.created_at.desc())
+        .order_by(Comic.created_at.desc())
     )
     return result.scalars().all()
 
 async def get_comic(db: AsyncSession, comic_id: int, user_id: int):
     result = await db.execute(
-        select(ComicOut).where(ComicOut.id == comic_id, ComicOut.user_id == user_id)
+        select(Comic).where(Comic.id == comic_id, Comic.user_id == user_id)
     )
     return result.scalar_one_or_none()
 
@@ -36,7 +36,7 @@ async def create_comic(db: AsyncSession, comic: ComicCreate, user_id: int):
         result = await db.execute(select(Grade.id).where(Grade.abbreviation == comic.grade.strip()))
         grade_id = result.scalar_one_or_none()
 
-    db_comic = ComicOut(
+    db_comic = Comic(
         user_id=user_id,
         title=comic.title,
         issue_number=comic.issue_number,
