@@ -141,7 +141,7 @@ async def add_comic(
 ):
     return await create_comic(db, comic, current_user.id)
 
-@router.patch("/comics/{comic_id}", response_model=ComicOut)
+@router.patch("/comics/{comic_id}", response_model=Comic)
 async def edit_comic(
     comic_id: int,
     comic_update: ComicCreate,
