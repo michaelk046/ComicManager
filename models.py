@@ -41,7 +41,7 @@ class Comic(Base):
     buy_price = Column(Float)
     current_value = Column(Float)
     sell_price = Column(Float)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)  # ← ADD THIS
+    created_at = Column(DateTime, default=DateTime.utcnow, nullable=False)  # ← ADD THIS
 
     owner = relationship("User", back_populates="comics")
     publisher = relationship("Publisher", back_populates="comics")
